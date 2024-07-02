@@ -5,11 +5,10 @@
       <select  :id="`input-${placeholder}`" :placeholder="placeholder" class="block mt-2 dark:bg-background bg-gray-100 dark:text-white  w-full bg-input py-3 rounded-xl text-sm px-4 transition-all  
             border-transparent border-2 hover:border-primary focus:border-primary outline-none
           " :class="class" :type="inputType" v-model="inputComputed"  :maxlength="max">
-          <option selected value="test" >{{ placeholder }}</option>
 
 
 
-          <option  v-for="(item, index) in data" :key="index" :value="item.value" >
+          <option :selected="index == 0"  v-for="(item, index) in data" :key="index" :value="item.value" >
             {{ item.key }}
           </option>
 

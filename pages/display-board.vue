@@ -84,7 +84,7 @@
 
     <template>
 
-        <div class="absolute w-screen h-screen top-0 z-0 bg-black bgImage">
+        <div class="fixed w-screen h-screen top-0 z-0 bg-black bgImage">
             <!-- <svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>
                 <defs>
                     <pattern id='a' patternUnits='userSpaceOnUse' width='29' height='50.115'
@@ -98,11 +98,11 @@
                 <rect width='800%' height='800%' transform='translate(-58,-0.23)' fill='url(#a)' />
             </svg> -->
 
-            
+
         </div>
 
-        <div class="w-96 h-96 bg-[#5B58E6]/40 blur-[300px] top-8 left-12 rounded-full absolute z-50"></div>
-        <div class="w-96 h-96 bg-[#5B58E6]/40 blur-[300px] bottom-8 right-12 rounded-full absolute z-50"></div>
+        <div class="w-96 h-96 bg-[#5B58E6]/70 blur-[300px] top-8 left-12 rounded-full absolute z-50"></div>
+        <div class="w-96 h-96 bg-[#5B58E6]/70 blur-[300px] bottom-8 right-12 rounded-full absolute z-50"></div>
         <div class="w-screen h-screen">
 
             <div class="flex flex-row gap-5 py-5 justify-center">
@@ -454,6 +454,18 @@
 
 
             </div>
+            <div class="flex flex-row gap-5 py-5 justify-center">
+                <UIDisplayCard class="!h-[450px] !w-96">
+                    <p class="text-lg w-full text-end text-primary p-5">خارطة المناطق</p>
+
+                    <div class="flex   h-[350px] z-50 p-5  overflow-hidden">
+                        
+                        <UIIraqMap />
+                        </div>
+                </UIDisplayCard>
+
+
+            </div>
 
 
 
@@ -464,6 +476,7 @@
 
 
 
+        <UIDisplayBoardModal @close="true"  />
     </template>
 
 <style scoped>
@@ -492,8 +505,8 @@
 
 }
 
-.bgImage{
+.bgImage {
     background-image: url("~/assets/images/wire.png");
-    
+
 }
 </style>

@@ -24,8 +24,8 @@ const props = defineProps({
         default: false
     },
     editForm: {},
-    addFormModal:{
-        default:false
+    addFormModal: {
+        default: false
     }
 
 
@@ -143,16 +143,16 @@ const handlerPagination = async (index) => {
 }
 
 
-const handlerClose = ()=>{
+const handlerClose = () => {
     emit('closeAddModal')
 }
-const handlerCreate = ()=>getAllData()
+const handlerCreate = () => getAllData()
 
 
 
 const showEditModal = ref(false)
 const editData = ref()
-const handlerEdit = (item,edit)=>{
+const handlerEdit = (item, edit) => {
     editData.value = item
     showEditModal.value = true
 }
@@ -162,14 +162,14 @@ const handlerEdit = (item,edit)=>{
 const showDeleteModal = ref(false)
 const deleteID = ref()
 const loadingDelete = ref(false)
-const handlerDelete = (id)=>{
+const handlerDelete = (id) => {
     showDeleteModal.value = true
     deleteID.value = id;
 }
 
-const _handlerDelete = async()=>{
+const _handlerDelete = async () => {
     loadingDelete.value = true
-    const {_ , response , error , __} = await props.composables.remove(deleteID.value)
+    const { _, response, error, __ } = await props.composables.remove(deleteID.value)
     loadingDelete.value = false
 
     showDeleteModal.value = false
@@ -195,8 +195,16 @@ const _handlerDelete = async()=>{
     <div class="flex flex-row w-full item-center  gap-5" dir="rtl" v-if="_filter">
 
         <div v-if="filter.length <= 2" v-for="(item, index) in filter" :key="index" class="md:w-96 w-full">
-            <UITextInput @keypress.enter="getAllData()" :placeholder="item.title" v-model:input="_filter[item.key]" />
-            <br>
+            <div v-if="item.type == 'text'">
+                <UITextInput @keypress.enter="getAllData()" :placeholder="item.title"
+                    v-model:input="_filter[item.key]" />
+                <br>
+            </div>
+            <div v-else-if="item.type == 'select'">
+                <UISelect @change="getAllData()" :placeholder="item.title"
+                    v-model:input="_filter[item.key]"  />
+                <br>
+            </div>
         </div>
         <div v-else class="md:w-96 w-full">
             <UITextInput @keypress.enter="getAllData()" :placeholder="filter[0].title"
@@ -247,30 +255,30 @@ const _handlerDelete = async()=>{
                     class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                     <td v-for="(_body, index) in body" :key="index" scope="row"
                         class="px-6  py-4 font-medium text-md text-gray-900 whitespace-nowrap dark:text-white">
-                        
-                       <span v-if="_body == 'role'"> 
-                            {{ item[_body] == '0' ?'مدير' :'' }}
-                            {{ item[_body] == '1' ?'مدينة' :'' }}
-                            {{ item[_body] == '2' ?'شركة' :'' }}
-                            {{ item[_body] == '3' ?'مستخدم' :'' }}
-                       </span>
-                       <span v-else> {{ getNestedValue(item, _body) || "لا يوجد" }}</span>
+
+                        <span v-if="_body == 'role'">
+                            {{ item[_body] == '0' ? 'مدير' : '' }}
+                            {{ item[_body] == '1' ? 'مدينة' : '' }}
+                            {{ item[_body] == '2' ? 'شركة' : '' }}
+                            {{ item[_body] == '3' ? 'مستخدم' : '' }}
+                        </span>
+                        <span v-else> {{ getNestedValue(item, _body) || "لا يوجد" }}</span>
                     </td>
 
                     <td class="py-4 text-center" v-if="hasButton">
                         <div class="flex gap-2 justify-center ">
 
-                            
+
                             <div class="tooltip jui-btn" @click="handlerDelete(item.id)">
                                 <div class="tooltip-text">حذف</div>
                                 <div>
-                                    <Icon name="basil:trash-outline" color="#FF8181" size="22"  />
+                                    <Icon name="basil:trash-outline" color="#FF8181" size="22" />
                                 </div>
                             </div>
-                            <div class="tooltip jui-btn" @click="handlerEdit(item,body)">
+                            <div class="tooltip jui-btn" @click="handlerEdit(item, body)">
                                 <div class="tooltip-text">تعديل</div>
                                 <div>
-                                    <Icon name="basil:edit-outline" color="#969696" size="22"  />
+                                    <Icon name="basil:edit-outline" color="#969696" size="22" />
                                 </div>
                             </div>
 
@@ -294,11 +302,11 @@ const _handlerDelete = async()=>{
 
     <nav class="pagination pagination-primary flex flex-row-reverse">
         <ul>
-          
+
             <li @click="handlerPagination(index)" v-for="(item, index) in data?.count || 0" :key="index">
                 <a href="#" :class="((index + 1) == pageIndex) ? '!bg-primary !text-white' : ''">{{ index + 1 }}</a>
             </li>
-            
+
             <li class="next" v-if="pageIndex < data?.count" @click="handlerPagination(pageIndex++)">
                 <a href="#">التالي</a>
             </li>
@@ -310,23 +318,26 @@ const _handlerDelete = async()=>{
 
 
 
-    <CommonAutoCRUD v-if="addFormModal" @create="handlerCreate" @close="handlerClose" :type="addForm?.type" :inputs="addForm?.inputs"
-        :composables="addForm?.composables" :schema="addForm?.schema" :title="addForm?.title" :width="addForm?.width"  />
+    <CommonAutoCRUD v-if="addFormModal" @create="handlerCreate" @close="handlerClose" :type="addForm?.type"
+        :inputs="addForm?.inputs" :composables="addForm?.composables" :schema="addForm?.schema" :title="addForm?.title"
+        :width="addForm?.width" />
 
-    <CommonAutoCRUD :editData="editData" v-if="showEditModal" @close="showEditModal = false" type="edit" :inputs="addForm?.inputs" @create="handlerCreate"
-        :composables="addForm?.composables" :schema="addForm?.schema" title="تعديل" :width="addForm?.width" />
+    <CommonAutoCRUD :editData="editData" v-if="showEditModal" @close="showEditModal = false" type="edit"
+        :inputs="addForm?.inputs" @create="handlerCreate" :composables="addForm?.composables" :schema="addForm?.schema"
+        title="تعديل" :width="addForm?.width" />
 
-        <UIModal v-if="showDeleteModal" @close="showDeleteModal" height="fit-content">
-            <p class="text-center text-lg font-semibold ">هل تريد حذف  هذا العنصر ؟ </p>
-            <br>
-            <div class="flex flex-row gap-5 justify-center">
-                <button v-if="!loadingDelete" @click="_handlerDelete" class="btn text-sm ">حذف</button>
-                <button v-else  class="btn text-sm ">
-                    <Icon name="mdi:loading" size="20" class="animate-spin" />
-                </button>
-                <button @click="showDeleteModal = false" class="btn text-sm border-2 border-primary !bg-transparent text-primary hover:text-white hover:!bg-primary">الغاء</button>
-            </div>
-        </UIModal>
+    <UIModal v-if="showDeleteModal" @close="showDeleteModal" height="fit-content">
+        <p class="text-center text-lg font-semibold ">هل تريد حذف هذا العنصر ؟ </p>
+        <br>
+        <div class="flex flex-row gap-5 justify-center">
+            <button v-if="!loadingDelete" @click="_handlerDelete" class="btn text-sm ">حذف</button>
+            <button v-else class="btn text-sm ">
+                <Icon name="mdi:loading" size="20" class="animate-spin" />
+            </button>
+            <button @click="showDeleteModal = false"
+                class="btn text-sm border-2 border-primary !bg-transparent text-primary hover:text-white hover:!bg-primary">الغاء</button>
+        </div>
+    </UIModal>
 
 </template>
 

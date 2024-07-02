@@ -15,32 +15,10 @@ const filter = ref([
     {
         title: 'الاسم',
         key: 'FullName',
-        type: 0,
+        type: "text",
 
     },
-    {
-        title: 'اسم المستخدم',
-        key: 'UserName',
-        type: "select",
-        data: [
-            {
-                key: 'مدير',
-                value: 0
-            },
-            {
-                key: 'مدينة',
-                value: 1
-            },
-            {
-                key: 'شركة',
-                value: 2
-            },
-            {
-                key: 'مستخدم',
-                value: 3
-            },
-        ]
-    },
+ 
    
 
 

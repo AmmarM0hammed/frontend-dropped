@@ -4,9 +4,9 @@
 const links = ref([
     {title : "ملخص النظام" , icon : "icon-park-outline:system" , path:'/' },
     {title : "ادارة المنظومة" , icon : "solar:display-linear" , path:'/system-management' },
-    {title : "ادارة الاجهزة" , icon : "ph:devices-light",path:"/device" },
+    // {title : "ادارة الاجهزة" , icon : "ph:devices-light",path:"/device" },
     {title : "ادارة المناطق" , icon : "ic:outline-place",path:"/region" },
-    {title : "الشركات" , icon : "ic:outline-place",path:"/company" },
+    {title : "الشركات" , icon : "f7:building-2",path:"/company" },
     {title : "ادارة المستخدمين" , icon : "ph:users" , path:'/users' },
     {title : "ادارة الفواتير" , icon : "uil:bill" },
     {title : "تسجيل الخروج" , icon : "mdi-light:logout" },

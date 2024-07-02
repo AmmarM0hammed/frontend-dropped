@@ -14,35 +14,29 @@ export const useCompany = () => {
 
   const create = async (data) => {
     return $jkrequest(
-      "/City/Add",
+      "/Company/Add",
       "post",
       {
-        nameAR: data.name,
-        nameEN: data.name,
-        governorateId: data.governorateId,
+        name: data.name,
+        regeon: data.regeon,
       },
       null
     );
   };
-  const update = async (data , id) => {
+  const update = async (id, data) => {
     return $jkrequest(
-      `/City/Update/${id}`,
+      `/Company/Update/${id}`,
       "put",
       {
-        nameAR: data.name,
-        nameEN: data.name,
-        governorateId: data.governorateId,
+        name: data.name,
+        regeon: data.regeon,
       },
       null
     );
   };
   const remove = async (id) => {
-    return $jkrequest(
-      `/City/Delete/${id}`,
-      "delete",
-      null,null
-    );
+    return $jkrequest(`/Company/Delete/${id}`, "delete", null, null);
   };
 
-  return { get, create , remove  , update};
+  return { get, create, remove, update };
 };

@@ -12,21 +12,19 @@ const filter = ref([
     {
         title: 'الاسم',
         key: 'Name',
-        type: 0,
+        type: "text",
 
     },
     {
         title: 'المحافظة',
         key: 'GovernorateId',
-        type: 0,
-        data: []
+        type: "select",
+        data: useGovernorate()
     },
 
 
 ])
 const addCityModal = ref(false)
-
-
 
 import {City} from "~/schema/City"
 
@@ -65,13 +63,18 @@ const bodyGovernorate = ref([
     "name",
 
 ])
+
+
+
+
+
 const governorate = useGovernorate();
 
 const filterGovernorate = ref([
     {
         title: 'الاسم',
         key: 'Name',
-        type: 0,
+        type: "text",
 
     },
   
@@ -79,7 +82,6 @@ const filterGovernorate = ref([
 
 ])
 const addGovernorateModal = ref(false)
-
 
 
 import {Governorate} from "~/schema/Governorate"
@@ -102,8 +104,6 @@ const governorateFormData = ref({
 const handlerGovernorateClose = ()=>{
     addGovernorateModal.value = false
 }
-
-
 
 const currentTap = ref(0)
 
