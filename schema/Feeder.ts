@@ -1,37 +1,17 @@
 import { z } from "zod";
 
 export const FeederSchema = z.object({
-  name: z
-    .string({
-      required_error: "الحقل مطلوب",
-    })
-    .min(3, "الاسم يجب ان يكون اكبر من 3 احرف ")
-    .max(200, "يجب ان يكون الاسم اصغر من 200 حرف"),
-  serialNumber: z
-    .string({
-      required_error: "الحقل مطلوب",
-    })
-    .min(1, "الاسم يجب ان يكون اكبر من 1 احرف ")
-    .max(200, "يجب ان يكون الاسم اصغر من 200 حرف"),
-  referenceNumber: z
-    .string({
-      required_error: "الحقل مطلوب",
-    })
-    .min(1, "الاسم يجب ان يكون اكبر من 1 احرف ")
-    .max(200, "يجب ان يكون الاسم اصغر من 200 حرف"),
+  name: z.string({
+    required_error: "الحقل مطلوب",
+  }),
 
-  incomingVoltage: z.number({
+  load: z.number({
     invalid_type_error: "يجب ام يكون رقماً",
   }),
-  outgoingVoltage: z.number({
+  distributionStationId: z.number({
     invalid_type_error: "يجب ام يكون رقماً",
   }),
-  capacity: z.number({
-    invalid_type_error: "يجب ام يكون رقماً",
-  }),
-  capacityUnit: z.number({
-    invalid_type_error: "يجب ام يكون رقماً",
-  }),
+
   cityId: z.number({
     invalid_type_error: "يجب ام يكون رقماً",
   }),

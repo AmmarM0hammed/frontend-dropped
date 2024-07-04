@@ -1,29 +1,19 @@
 <script setup>
-
 import { FeederSchema } from "~/schema/Feeder"
 
 
 var FeederDataForm = reactive({
-    name: null,
-    serialNumber: "",
-    referenceNumber: "",
-    incomingVoltage: null,
-    outgoingVoltage: null,
-    capacity: null,
-    capacityUnit: null,
-    governorateId: null,
-    cityId: null,
-    latitud: null,
-    longitud: null
+    name: "",
+    load: null,
+    distributionStationId:1,
+    governorateId: 1,
+    cityId: 1
 })
 const FeederModalAdd = ref(false)
-const mapPostion = ref()
-const getPostion = (postion) => {
-    mapPostion.value = postion
-}
 
 const citys = ref([])
-const governorates = ref([])
+const governorates = ref([]) 
+const distributionStation = ref([]) 
 onMounted(async () => {
     var tempCity = []
     const city = await useCity().get({ Name: '', GovernorateId: '' }, 1, 10000)
@@ -44,27 +34,37 @@ onMounted(async () => {
         });
     }
     governorates.value = tempGovernorates
+
+
+    var tempdistributionStation = []
+    const _distributionStation = await useDistributionStation().get({ Name: '', GovernorateId: '' }, 1, 10000)
+    for (let index = 0; index < _distributionStation.response?.result.length; index++) {
+        tempdistributionStation.push({
+            key: _distributionStation.response?.result[index].name,
+            value: _distributionStation.response?.result[index].id,
+        });
+    }
+    distributionStation.value = tempdistributionStation
 })
 
 // TODO:FIX ZOD
 const errors = ref()
 const isLoading = ref(false)
 const handlerAddFeeder = async () => {
-    const result = Feeder.safeParse(FeederModalAdd);
+    const result = FeederSchema.safeParse(FeederDataForm);
 
-    if (result.success) {
+    if (!result.success) {
         errors.value = result.error.format()
-
         return;
-    }   
-    FeederDataForm.latitud = mapPostion.value.lat
-    FeederDataForm.longitud = mapPostion.value.lng
+    }
     isLoading.value = true
     const { _, response, error, __ } = await useFeeder().create(FeederDataForm)
     FeederModalAdd.value = false
     isLoading.value = false
     errors.value = ''
     FeederDataForm = {}
+    getAllData();
+
 
 }
 
@@ -74,17 +74,11 @@ const isLoadingGetData = ref(false)
 
 const filter = ref({
     Name: '',
-    SerialNumber: '',
-    ReferenceNumber: '',
-    IncomingVoltage: '',
-    OutgoingVoltage: '',
-    Capacity: '',
-    CapacityUnit: '',
-    GovernorateId: '',
-    CityId: '',
+    Load: '',
+
 })
 const PageIndex = ref(1);
-const PageSize = ref(10);
+const PageSize = ref(10000);
 const getAllData = async () => {
     isLoadingGetData.value = true;
     const { _, response, error, __ } = await useFeeder().get(filter.value, PageIndex.value, PageSize.value);
@@ -95,90 +89,119 @@ onMounted(() => getAllData())
 
 
 const editItem = ref()
+const FeederModalEdit = ref(false)
 
 const editID = ref()
 const handlerEdit = (item) => {
     editItem.value = item;
-    FeederModalAdd.value = true;
+    FeederModalEdit.value = true;
     editID.value = item.id
+
     FeederDataForm.name = item.name;
-    FeederDataForm.serialNumber = item.serialNumber;
-    FeederDataForm.referenceNumber = item.referenceNumber;
-    FeederDataForm.incomingVoltage = item.incomingVoltage;
-    FeederDataForm.outgoingVoltage = item.outgoingVoltage;
-    FeederDataForm.capacity = item.capacity;
-    FeederDataForm.capacityUnit = item.capacityUnit;
-    FeederDataForm.governorateId = item.governorateId;
-    FeederDataForm.cityId = item.cityId;
-    FeederDataForm.latitud = item.latitud;
-    FeederDataForm.longitud     = item.longitud;
+    FeederDataForm.load = item.load;
+    FeederDataForm.distributionStationId = item.distributionStation.id;
+    FeederDataForm.governorateId = item.governorate.id;
+    FeederDataForm.cityId = item.city.id;
+
 };
 
+const handlerEditFeeder = async () => {
+    const result = FeederSchema.safeParse(FeederDataForm);
+
+    if (!result.success) {
+        errors.value = result.error.format()
+
+        return;
+    }
+
+    isLoading.value = true
+    const { _, response, error, __ } = await useFeeder().update(editID.value, FeederDataForm)
 
 
+    FeederModalEdit.value = false
+    isLoading.value = false
+    errors.value = ''
+    FeederDataForm = {}
+    getAllData();
+
+}
+
+
+const deleteModal = ref(false)
+const deleteID = ref()
+const isLoadingButton = ref(false)
+const handlerDelete = (id) => {
+    deleteModal.value = true;
+    deleteID.value = id
+}
+const _handlerDelete = async () => {
+    isLoadingButton.value = true
+    await useFeeder().remove(deleteID.value)
+    isLoadingButton.value = false
+    deleteModal.value = false;
+    getAllData()
+
+}
+
+const handlerCloseModal = () => {
+    FeederDataForm = {
+        name: "",
+        load: null,
+        distributionStationId: 0,
+        governorateId: 0,
+        cityId: 0
+    }
+    FeederModalEdit.value = false
+    FeederModalAdd.value = false
+}
+
+
+const viewModal = ref(false)
+const viewData = ref('')
+
+const handlerViewData = (data) => {
+    viewModal.value = true;
+    viewData.value = data
+}
+
+const removeFilter = () => {
+    filter.value.Name = ''
+    getAllData()
+}
 
 </script>
 
 
 <template>
-    <UIModal width="50vw" height="fit-content" v-if="FeederModalAdd"
-        @close="FeederModalAdd = false">
-        <p class="text-xl text-center font-medium">اضافة مغذيات</p>
+    <UIModal width="50vw" height="fit-content" v-if="FeederModalAdd" @close="handlerCloseModal">
+        <p class="text-xl text-center font-medium">اضافة مغذي</p>
         <br>
-        <form @submit.prevent="handlerAddFeeder" class="w-full gap-2 flex flex-col items-center">
+        <form @submit.prevent="" class="w-full gap-2 flex flex-col items-center">
 
             <div class="w-full">
                 <UITextInput placeholder="الاسم" v-model:input="FeederDataForm.name"
                     :error="(errors && errors.name) ? errors.name._errors[0] : ''" />
             </div>
+            
             <div class="w-full">
-
-                <UITextInput placeholder="الرقم التسلسلي" v-model:input="FeederDataForm.serialNumber"
-                    :error="(errors && errors.serialNumber) ? errors.serialNumber._errors[0] : ''" />
-            </div>
-
-            <div class="w-full">
-                <UITextInput placeholder="الرقم المرجعي" v-model:input="FeederDataForm.referenceNumber"
-                    :error="(errors && errors.referenceNumber) ? errors.referenceNumber._errors[0] : ''" />
+                <UITextInput inputType="number" placeholder="الحمل" v-model:input="FeederDataForm.load"
+                    :error="(errors && errors.load) ? errors.capacityUnit._errors[0] : ''" />
             </div>
             <div class="w-full">
-                <UITextInput inputType="number" placeholder="الجهد الوارد"
-                    v-model:input="FeederDataForm.incomingVoltage" type="number"
-                    :error="(errors && errors.incomingVoltage) ? errors.incomingVoltage._errors[0] : ''" />
+                <UISelect :data="distributionStation" placeholder="محطة التوزيع" v-model:input="FeederDataForm.distributionStationId"
+                    type="number" :error="(errors && errors.governorateId) ? errors.governorateId._errors[0] : ''" />
             </div>
             <div class="w-full">
-                <UITextInput inputType="number" placeholder="الجهد الصادر"
-                    v-model:input="FeederDataForm.outgoingVoltage" type="number"
-                    :error="(errors && errors.outgoingVoltage) ? errors.outgoingVoltage._errors[0] : ''" />
+                <UISelect :data="governorates" placeholder="المحافظة" v-model:input="FeederDataForm.governorateId"
+                    type="number" :error="(errors && errors.governorateId) ? errors.governorateId._errors[0] : ''" />
             </div>
             <div class="w-full">
-                <UITextInput inputType="number" placeholder="السعة" v-model:input="FeederDataForm.capacity"
-                    type="number" :error="(errors && errors.capacity) ? errors.capacity._errors[0] : ''" />
+                <UISelect :data="citys" placeholder="المدينة" v-model:input="FeederDataForm.cityId" type="number"
+                    :error="(errors && errors.cityId) ? errors.cityId._errors[0] : ''" />
             </div>
-            <div class="w-full">
-                <UITextInput inputType="number" placeholder="وحدة السعة"
-                    v-model:input="FeederDataForm.capacityUnit"
-                    :error="(errors && errors.capacityUnit) ? errors.capacityUnit._errors[0] : ''" />
-            </div>
-            <div class="w-full">
-                <UISelect :data="governorates" placeholder="المحافظة"
-                    v-model:input="FeederDataForm.governorateId" type="number"
-                    :error="(errors && errors.governorateId) ? errors.governorateId._errors[0] : ''" />
-            </div>
-            <div class="w-full">
-                <UISelect :data="citys" placeholder="المدينة" v-model:input="FeederDataForm.cityId"
-                    type="number" :error="(errors && errors.cityId) ? errors.cityId._errors[0] : ''" />
-            </div>
-
-
-
         </form>
         <br>
 
-        <div class="map">
-            <CommonMap @postion="getPostion" :lat="FeederDataForm.latitud" :lng="FeederDataForm.longitud" />
-        </div>
-        <br>
 
         <button v-if="!isLoading" @click="handlerAddFeeder()" class="btn btn-block text-sm">
             اضافة
@@ -187,22 +210,116 @@ const handlerEdit = (item) => {
             <Icon name="mdi:loading" size="22" class="text-white animate-spin" />
         </button>
     </UIModal>
-  
+
+    <UIModal width="50vw" height="fit-content" v-if="FeederModalEdit" @close="handlerCloseModal">
+        <p class="text-xl text-center font-medium">تعديل مغذي</p>
+        <br>
+        <form @submit.prevent="" class="w-full gap-2 flex flex-col items-center">
+
+            <div class="w-full">
+                <UITextInput placeholder="الاسم" v-model:input="FeederDataForm.name"
+                    :error="(errors && errors.name) ? errors.name._errors[0] : ''" />
+            </div>
+            
+            <div class="w-full">
+                <UITextInput inputType="number" placeholder="الحمل" v-model:input="FeederDataForm.load"
+                    :error="(errors && errors.load) ? errors.load._errors[0] : ''" />
+            </div>
+            <div class="w-full">
+                <UISelect :data="distributionStation" placeholder="محطة التوزيع" v-model:input="FeederDataForm.distributionStationId"
+                    type="number" :error="(errors && errors.distributionStationId) ? errors.distributionStationId._errors[0] : ''" />
+            </div>
+            <div class="w-full">
+                <UISelect :data="governorates" placeholder="المحافظة" v-model:input="FeederDataForm.governorateId"
+                    type="number" :error="(errors && errors.governorateId) ? errors.governorateId._errors[0] : ''" />
+            </div>
+            <div class="w-full">
+                <UISelect :data="citys" placeholder="المدينة" v-model:input="FeederDataForm.cityId" type="number"
+                    :error="(errors && errors.cityId) ? errors.cityId._errors[0] : ''" />
+            </div>
+
+
+
+        </form>
+        <br>
+
+      
+        <button v-if="!isLoading" @click="handlerEditFeeder()" class="btn btn-block text-sm">
+            تعديل
+        </button>
+        <button v-else class="btn btn-block text-sm">
+            <Icon name="mdi:loading" size="22" class="text-white animate-spin" />
+        </button>
+    </UIModal>
+
+    <UIModal v-if="deleteModal" @close="deleteModal = false" height="fit-content">
+        <p class="text-center text-lg font-semibold ">هل تريد حذف هذه مغذي ؟ </p>
+        <br>
+        <div class="flex flex-row gap-5 justify-center">
+            <button v-if="!isLoadingButton" @click="_handlerDelete" class="btn text-sm ">حذف</button>
+            <button v-else class="btn text-sm ">
+                <Icon name="mdi:loading" size="20" class="animate-spin" />
+            </button>
+            <button @click="deleteModal = false"
+                class="btn text-sm border-2 border-primary !bg-transparent text-primary hover:text-white hover:!bg-primary">الغاء</button>
+        </div>
+    </UIModal>
+
+
+
+    <UIModal height="fit-content" v-if="viewModal" @close="viewModal = false">
+        <p class="text-center text-xl font-medium">تفاصيل</p>
+        <div class="flex flex-col gap-3 px-2 py-5 text-sm">
+            <div class="flex flex-row justify-between">
+                <p class="font-medium">{{ viewData.name }}</p>
+                <p class="font-medium">: الاسم</p>
+            </div>
+            
+            <div class="flex flex-row justify-between">
+                <p class="font-medium">{{ viewData.load }}</p>
+                <p class="font-medium">: الحمل</p>
+            </div>
+            
+            <div class="flex flex-row justify-between">
+                <p class="font-medium">{{ viewData.distributionStation.name }}</p>
+                <p class="font-medium">: محطةالتوزيع</p>
+            </div>
+            
+            <div class="flex flex-row justify-between">
+                <p class="font-medium">{{ viewData.governorate.name }}</p>
+                <p class="font-medium">: المحافظة</p>
+            </div>
+            <div class="flex flex-row justify-between">
+                <p class="font-medium">{{ viewData.city.name }}</p>
+                <p class="font-medium">: المدينة</p>
+            </div>
+            <br>
+          
+        </div>
+    </UIModal>
+
+
+
+
+
     <br>
-    <CommonFolderSection @edit="(data) => handlerEdit(data)" v-if="!isLoadingGetData" :data="Feeder"
-        title="محطات التوزيع" iconFolder="hugeicons:folder-01" iconColor="text-blue-500">
+    <CommonFolderSection @view="(data) => handlerViewData(data)" @delete="(id) => handlerDelete(id)"
+        @edit="(data) => handlerEdit(data)" v-if="!isLoadingGetData" :data="Feeder" title="المغذيات"
+        iconFolder="ph:network-duotone" iconColor="text-blue-500">
         <div class="flex flex-row gap-4 items-center">
             <button class="btn text-sm mt-1 " @click="FeederModalAdd = true">
                 <Icon name="ph:plus" size="19" />
                 اضافة محطة
             </button>
-            <button class="btn-icon jui-btn px-[12px] mt-2">
-                <Icon name="hugeicons:filter" size="22" />
+            <button @click="removeFilter()" class="btn-icon jui-btn px-[12px] mt-2" v-if="filter.Name != ''">
+                <Icon name="hugeicons:filter-remove" size="22" />
             </button>
             <UITextInput v-model:input="filter.Name" @keypress.enter="getAllData" placeholder="الاسم" :label="false"
                 class="!w-96" />
         </div>
     </CommonFolderSection>
-    <UILoading v-else />
+    <div class="w-full h-screen flex flex-row items-center justify-center" v-else>
+        <UILoading />
+    </div>
 
 </template>

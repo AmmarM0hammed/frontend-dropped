@@ -58,6 +58,11 @@ const handlerClose = () => {
       <div class="py-5 relative">
         <slot />
       </div>
+      <div class=" w-4 h-4 border-t-2 border-r-2 border-primary top-2 right-2 absolute"></div>
+        <div class=" w-4 h-4 border-t-2 border-l-2 border-primary top-2 left-2 absolute"></div>
+
+        <div class=" w-4 h-4 border-b-2 border-r-2 border-primary bottom-2 right-2 absolute"></div>
+        <div class=" w-4 h-4 border-b-2 border-l-2 border-primary bottom-2 left-2 absolute"></div>
     </div>
   </div>
 </template>
@@ -94,12 +99,11 @@ const handlerClose = () => {
 
 @keyframes scaleIn {
   from {
-    transform: scale(.5);
+    height: 0px;
   }
 
   to {
-    transform: scale(1);
-
+    height: 200px;
   }
 }
 
@@ -125,15 +129,11 @@ const handlerClose = () => {
 
 @keyframes scaleOut {
   from {
-    /* transform: scale(1); */
-    opacity: 1;
-
+    height: 200px;
   }
 
   to {
-    transform: scale(.5);
-    opacity: 0;
-
+    height: 0px;
   }
 }
 </style>

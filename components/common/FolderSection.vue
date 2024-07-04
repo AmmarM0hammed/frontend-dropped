@@ -7,11 +7,17 @@ defineProps({
     data: {}
 })
 
-const emit = defineEmits(['edit'])
+const emit = defineEmits(['edit','delete','view'])
 
 
 const handlerEdit = (item)=>{
     emit('edit',item)
+}
+const handlerDelete = (id)=>{
+    emit('delete',id)
+}
+const handlerView = (data)=>{
+    emit('view',data)
 }
 
 </script>
@@ -37,7 +43,7 @@ const handlerEdit = (item)=>{
             <br>
 
             <div class="flex gap-5 flex-wrap">
-                <UIFolderCard @edit="(_data)=>handlerEdit(_data)" :title="item" v-for="(item, index) in data" :key="index"
+                <UIFolderCard @view="(_data)=>handlerView(_data)" @delete="(_id)=>handlerDelete(_id)" @edit="(_data)=>handlerEdit(_data)" :data="item" v-for="(item, index) in data" :key="index"
                     :icon="iconFolder" :color="iconColor" />
             </div>
 

@@ -38,20 +38,28 @@ export const useDistributionStation = () => {
       null
     );
   };
-  const update = async (data, id) => {
+  const update = async ( id , data) => {
     return $jkrequest(
-      `/City/Update/${id}`,
+      `/DistributionStation/Update/${id}`,
       "put",
       {
-        nameAR: data.name,
-        nameEN: data.name,
+        name: data.name,
+        serialNumber: data.serialNumber,
+        referenceNumber: data.referenceNumber,
+        incomingVoltage: data.incomingVoltage,
+        outgoingVoltage: data.outgoingVoltage,
+        capacity: data.capacity,
+        capacityUnit: data.capacityUnit,
         governorateId: data.governorateId,
+        cityId: data.cityId,
+        latitud: data.latitud,
+        longitud: data.longitud,
       },
       null
     );
   };
   const remove = async (id) => {
-    return $jkrequest(`/City/Delete/${id}`, "delete", null, null);
+    return $jkrequest(`/DistributionStation/Delete/${id}`, "delete", null, null);
   };
 
   return { get, create, remove, update };

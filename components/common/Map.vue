@@ -1,9 +1,10 @@
 <script setup>
 import { Loader } from '@googlemaps/js-api-loader'
+import { ZodNull } from 'zod';
 
 const useGeolocation = () => {
   const coords = ref({ latitude: 33.312805, longitude: 44.361488 })
-  
+
   const isSupported = typeof window !== 'undefined' && 'navigator' in window && 'geolocation' in navigator
 
   let watcher = null
@@ -15,8 +16,8 @@ const useGeolocation = () => {
 
     // Check if navigator is defined before accessing it
 
-        
-    
+
+
   })
 
   onUnmounted(() => {
@@ -27,12 +28,12 @@ const useGeolocation = () => {
 }
 
 const props = defineProps({
-  lat:null,
-  lng:null
+  lat: null,
+  lng: null
 })
 const emit = defineEmits(['postion'])
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyC4oHW8zf-2h2cFHkuJn8xJlxdUEg2dIXg'
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDpugSLagAriIejIn2M5c0T2jMNErAusJo'
 
 let map = null
 let marker = null
@@ -54,19 +55,21 @@ const currPos = computed(() => ({
   lng: coords.value.longitude
 }))
 
-const setCoords = (latitude, longitude) => {
-    coords.latitude = latitude;
-    coords.longitude = longitude;
-};
+
 const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY })
 
 onMounted(async () => {
   await loader.load()
+  // setCoords(props.lat, props.lng)
+  if(props.lat != null){
+  currPos.value.lat = props.lat
+  currPos.value.lng = props.lng
+  }
   map = new google.maps.Map(document.getElementById('map'), {
     center: currPos.value,
     zoom: 15
   })
-  setCoords(props.lat,props.lng)
+
 
   emit('postion', currPos.value)
 
@@ -82,5 +85,5 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div id="map"  class="w-full" style="height: 400px; border-radius: 15px;" />
+  <div id="map" class="w-full" style="height: 400px; border-radius: 15px;" />
 </template>

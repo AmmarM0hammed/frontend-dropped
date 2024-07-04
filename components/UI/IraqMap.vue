@@ -182,9 +182,12 @@ function openDialog2(item) {
 const itemDialog = ref({})
 
 
+const emit = defineEmits(['clickGov'])
 const showMessage = (title) => {
 
-    alert(title)
+    // alert(title)
+
+    emit('clickGov')
 }
 
 

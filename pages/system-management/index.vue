@@ -13,6 +13,8 @@
     <br>
     <PageSystemManagmentFeeder />
     <br>
-    <CommonFolderSection title="المناطق" iconFolder="healthicons:city-outline" iconColor="text-primary" />
+    <PageSystemManagmentRegion />
+
+    <!-- <CommonFolderSection title="المناطق" iconFolder="healthicons:city-outline" iconColor="text-primary" /> -->
 
 </template>
