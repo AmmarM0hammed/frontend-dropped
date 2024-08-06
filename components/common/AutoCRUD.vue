@@ -23,7 +23,7 @@ const getInitialValue = (type) => {
         case 'select':
         case 'image':
         case 'password':
-        case 'datetime':
+        case 'date':
             return '';
         case 'checkbox':
             return false;
@@ -76,7 +76,7 @@ const handlerAdd = async () => {
     if (props.type == 'add') {
         const result = props.schema.safeParse(data.value)
         if (!result.success) {
-
+            console.log(result.error.format())
             errors.value = result.error.format();
             return;
         }
@@ -122,33 +122,34 @@ const handlerAdd = async () => {
                         :error="(errors && errors[item.key]) ? errors?.[item.key]._errors[0] : ''" />
                 </div>
                 <div v-else-if="item.type == 'password'">
-                    <!-- select -->
                     <UITextInput input-type="password" :placeholder="item.title" v-model:input="data[item.key]"
                         :error="(errors && errors[item.key]) ? errors?.[item.key]._errors[0] : ''" />
                 </div>
                 <div v-else-if="item.type == 'select'">
-                    <!-- select -->
                     <UISelect :error="(errors && errors[item.key]) ? errors?.[item.key]._errors[0] : ''"
-                        :placeholder="item.title"  :data="selectData[item.key]" :options="item.composables"
+                        :placeholder="item.title" :data="selectData[item.key]" :options="item.composables"
                         v-model:input="data[item.key]" />
-                
+
                 </div>
                 <div v-else-if="item.type == 'checkbox'">
-                    {{ data[item.key] }}
-                    <UICheckbox v-model:input="data[item.key]" title="Checkbox" />
+
+                    <div class="switch flex items-center gap-2  justify-end">
+                        <p class="text-sm">{{item.title}}</p>
+                        <input v-model="data[item.key]" type="checkbox" id="check1" class="toggle">
+                    </div>
                 </div>
                 <div v-else-if="item.type == 'number'">
-                    numbewr
+                    <UITextInput input-type="number" :placeholder="item.title" v-model:input="data[item.key]"
+                        :error="(errors && errors[item.key]) ? errors?.[item.key]._errors[0] : ''" />
                     <!-- <UINumberInput :placeholder="item.title" v-model="data[item.key]" /> -->
                 </div>
                 <div v-else-if="item.type == 'image'">
                     image
                     <!-- <UIImageInput :label="item.title" v-model="data[item.key]" :multiple="item.isMultiple" /> -->
                 </div>
-                <div v-else-if="item.type == 'datetime'">
-                    datatime
-
-                    <!-- <UIDateTimeInput :label="item.title" v-model="data[item.key]" /> -->
+                <div v-else-if="item.type == 'date'">
+                    <UITextInput input-type="date" :placeholder="item.title" v-model:input="data[item.key]"
+                    :error="(errors && errors[item.key]) ? errors?.[item.key]._errors[0] : ''" />
                 </div>
             </div>
 
@@ -162,3 +163,66 @@ const handlerAdd = async () => {
         </div>
     </UIModal>
 </template>
+
+<style scoped>
+.switch input[type=checkbox] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+}
+
+.switch input[type=checkbox]:focus {
+    outline: 0;
+}
+
+.switch .toggle {
+    height: 30px;
+    width: 53px;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    background: #E4E7E8;
+    transition: all, 0.2s ease-in-out;
+}
+
+.switch .toggle:active {
+    transform: scale(95%);
+}
+
+.switch .toggle:active {
+    transform: scale(95%);
+}
+
+.switch .toggle:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translate(2px, -50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    transition: all, 0.2s ease-in-out;
+}
+
+.switch .toggle::before {
+    content: "";
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    background-color: rgba(91, 88, 230,1);
+    top: 0;
+    left: -100%;
+    transition: all, 0.2s ease-in-out;
+}
+
+.switch .toggle:checked::before {
+    left: 0;
+}
+
+.switch .toggle:checked:after {
+    transform: translate(27px, -50%);
+}
+</style>

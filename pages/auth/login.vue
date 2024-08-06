@@ -1,13 +1,46 @@
 <script setup>
 
+
 definePageMeta({
     layout: "AuthLayout"
 })
 
 
+const formData = ref({
+    username:'',
+    password:''
+})
+
+const errors = ref()
+const user = useUserStore()
+const isLoading = ref(false)
+const handlerLogin = async()=>{
+    isLoading.value = true;
+    const {_ , response , error , __} = await useAuth().login(formData.value);
+
+    if(error != null){
+        errors.value = error.response.data.message
+        console.log(error)
+        isLoading.value = false;
+
+        return;
+    }
+    
+    useUserStore().user.id = response.result.id
+    useUserStore().user.role = response.result.role
+    useUserStore().user.username = response.result.userName
+    useUserStore().user.fullname = response.result.fullName
+    useUserStore().user.token = response.result.token
+    return navigateTo('/')
+    isLoading.value = false;
+
+}
+
+
+
 </script>
 <template>
-
+    {{ user }}
     <div dir="rtl" class=" h-[calc(100vh_-_20px)]  ">
         <div class="w-full z-10 fixed top-0 bg-primary   h-full  overflow-hidden flex items-center justify-center ">
             <div class="flex flex-col  w-96  gap-10 items-center  ">
@@ -20,10 +53,11 @@ definePageMeta({
                 <p class="text-2xl font-semibold">تسجيل الدخول</p>
                 <p class="text-lg font-normal">تسجيل الدخول الى حسابك</p>
                 <div class="flex flex-col gap-2 w-full pt-5">
-                    <UITextInput placeholder="البريد الاكتروني" class="py-4 rounded-2xl bg-black/5" />
-                    <UITextInput placeholder="كلمة السر" class="py-4 rounded-2xl bg-black/5" />
+                    <UITextInput v-model:input="formData.username" placeholder="البريد الاكتروني" class="py-4 rounded-2xl bg-black/5" />
+                    <UITextInput input-type="password" v-model:input="formData.password" placeholder="كلمة السر" class="py-4 rounded-2xl bg-black/5" />
                     <br>
-                    <button class="btn btn-block text-sm py-4 rounded-t-2xl">تسجيل الدخول</button>
+                    <p class="text-center py-2 text-red-500">{{errors}}</p>
+                    <button @click="handlerLogin" class="btn btn-block text-sm py-4 rounded-t-2xl">تسجيل الدخول</button>
                 </div>
             </div>
             </div>

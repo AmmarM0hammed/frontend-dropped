@@ -80,7 +80,7 @@ const handlerView = (data)=>{
     <div @contextmenu.prevent="handlerMenu" :class="`card-${data.id}-${name}`" @click="handlerView(data)"
         class="flex flex-col border-2 relative border-gray-50 transition-all hover:border-primary gap-3 items-center p-5 justify-center w-40 h-40 jui-btn jui-shadow2 rounded-2xl ">
         <Icon :name="icon" size="55" class="text-primary" :class="color" />
-        <p class="text-lg">{{ data?.name }}</p>
+        <p class="text-lg text-center">{{ data?.name }}</p>
         <Icon name="charm:menu-kebab" size="17" class="text-gray-500 absolute h-6 top-4 right-4 jui-btn" />
         <div
             class="top-9 dropdown hidden right-4 flex-col py-2 border-2 bg-white jui-shadow rounded-2xl border-gray-50 0 w-40 absolute h-fit text-center z-50">

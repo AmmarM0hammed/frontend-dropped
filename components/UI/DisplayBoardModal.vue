@@ -54,7 +54,7 @@ const handlerClose = () => {
   <div dir="rtl" class="fixed w-[100vw]  left-0 h-screen  top-0 z-[65] flex flex-row items-center justify-center">
     <div id="modal" :style="{ height: height, width: width }"
       class="fixed overflow-auto z-[70] p-5 rounded-sm bg-effect backdrop-blur-xl  max-h-[95vh]">
-      <Icon name="ep:close" size="25px" class="cursor-pointer text-white jui-btn" @click="handlerClose" />
+      <Icon name="ep:close" size="25px" class="cursor-pointer text-primary jui-btn" @click="handlerClose" />
       <div class="py-5 relative">
         <slot />
       </div>

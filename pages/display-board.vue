@@ -25,7 +25,7 @@ var options = {
             autoSelected: "pan",
             show: false
         },
-        foreColor: "#ccc    ",
+        foreColor: "#ccc",
     },
     dataLabels: {
         enabled: false
@@ -34,7 +34,7 @@ var options = {
     series: [
         {
             name: "مؤشر",
-            data: [15, 23, 38, 45, 19, 23, 2]
+            data: [24, 23, 38, 45, 19, 23, 2]
         },
         {
             name: "مؤشر",
@@ -54,11 +54,9 @@ var options = {
             stops: [0, 90, 55],
         }
     },
-    xaxis: {
-
-    },
+    
     grid: {
-        borderColor: "#555",
+        borderColor: "#fff",
         clipMarkers: false,
         yaxis: {
             lines: {
@@ -77,17 +75,19 @@ var options = {
 
 onMounted(() => {
     var chart = new ApexCharts(document.querySelector("#chart1"), options);
-
     chart.render();
 })
 
 const mapModal = ref(false)
-const handlerOpenModal = ()=>{
+const city = ref()
+const handlerOpenModal = (data) => {
     const sound = new Audio('./spark2.mp3');
-    // sound.play()
-    setTimeout(()=>{
+    sound.play()
+    city.value = data
+    setTimeout(() => {
         mapModal.value = true
-    },500)
+    }, 500)
+
 }
 </script>
 
@@ -386,9 +386,9 @@ const handlerOpenModal = ()=>{
                                                     d="M 65.16250160204422 160.83749839795576 A 67.65243902439025 67.65243902439025 0 1 1 175.27439846984652 139.4339138450518"
                                                     fill="none" fill-opacity="0.85" stroke="#5B58E6" stroke-opacity="1"
                                                     stroke-linecap="butt" stroke-width="21.060975609756095"
-                                                    stroke-dasharray="3"
+                                                    stroke-dasharray="2"
                                                     class="apexcharts-radialbar-area apexcharts-radialbar-slice-0"
-                                                    data:angle="248" data:value="92" index="0" j="0"
+                                                    data:angle="248" data:value="90" index="0" j="0"
                                                     data:pathOrig="M 65.16250160204422 160.83749839795576 A 67.65243902439025 67.65243902439025 0 1 1 175.27439846984652 139.4339138450518">
                                                 </path>
                                                 <text x="113" y="143" text-anchor="middle" dominant-baseline="auto"
@@ -456,16 +456,57 @@ const handlerOpenModal = ()=>{
 
 
         </div>
-        <div class="flex flex-row gap-5 py-5 justify-center">
+        <div class="flex flex-row gap-5 md:px-24 py-5 justify-center">
+
             <UIDisplayCard class="!h-[450px] !w-96">
                 <p class="text-lg w-full text-end text-primary p-5">خارطة المناطق</p>
 
                 <div class="flex   h-[350px] z-50 p-5  overflow-hidden">
 
-                    <UIIraqMap @clickGov="handlerOpenModal" />
+                    <UIIraqMap @clickGov="(_city)=>handlerOpenModal(_city)" />
                 </div>
             </UIDisplayCard>
+            <UIDisplayCard class="!h-[450px] !w-full flex-1">
+                <p class="text-lg w-full text-end text-primary p-5">السجلات</p>
 
+                <div class="flex flex-col gap-2 px-5 items-centers w-full" dir="rtl">
+                    <div class="flex flex-row justify-between bg-[#5B58E6]/15 px-5 py-2 ">
+                        <p class="text-primary">الاسم</p>
+                        <p class="text-primary">الصلاحية</p>
+                        <p class="text-primary">التعديل</p>
+                        <p class="text-primary">الحالة</p>
+                        <p class="text-primary">التاريخ</p>
+                    </div>
+
+                    <div v-for="(item, index) in 5" :key="index"
+                        class="flex text-center flex-row justify-between bg-black/25 px-5 py-2 ">
+                        <p class="text-primary text-center w-10">عمار</p>
+                        <p class="text-primary w-10 px-5">مدير</p>
+                        <p class="text-primary w-10 ">المناطق</p>
+                        <p class="text-primary ">
+                            <span v-if="index % 2 == 0"
+                                class="bg-green-500 bg-opacity-15 rounded-sm text-green-600 text-xs px-3 text">انجز</span>
+                            <span v-else
+                                class="bg-orange-500 bg-opacity-15 rounded-sm text-orange-600 text-xs px-3 text">جاري</span>
+
+
+                        </p>
+                        <p class="text-primary text-center  text-[12px]">2024/7/1</p>
+                    </div>
+                    <div :key="index" class="flex text-center flex-row justify-between bg-black/25 px-5 py-2 ">
+                        <p class="text-primary text-center w-10">عمار</p>
+                        <p class="text-primary w-10 px-5">مدير</p>
+                        <p class="text-primary w-10 ">المناطق</p>
+                        <p class="text-primary ">
+
+                            <span class="bg-red-500 bg-opacity-15 rounded-sm text-red-600 text-xs px-3 text">مغلق</span>
+                        </p>
+                        <p class="text-primary text-center  text-[12px]">2024/7/1</p>
+                    </div>
+
+
+                </div>
+            </UIDisplayCard>
 
         </div>
 
@@ -476,7 +517,85 @@ const handlerOpenModal = ()=>{
 
     </div>
 
-    <UIDisplayBoardModal v-if="mapModal" @close="mapModal = false" />
+
+
+
+
+
+
+    <UIDisplayBoardModal v-if="mapModal" @close="mapModal = false">
+        <div class="flex px-5 flex-col">
+            <p class="text-xl text-primary">تفاصيل {{ city }}</p>
+            <br>
+
+            <div class="flex flex-row justify-between">
+                <div class="flex flex-col gap-2 text-center">
+                    <div class="relative size-24">
+                        <svg class="size-full" width="36" height="36" viewBox="0 0 36 36"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <!-- Background Circle -->
+                            <circle cx="18" cy="18" r="16" fill="none"
+                                class="stroke-current  dark:text-neutral-700" stroke-width="2"></circle>
+                            <!-- Progress Circle inside a group with rotation -->
+                            <g class="origin-center -rotate-90 transform">
+                                <circle cx="18" cy="18" r="16" fill="none"
+                                    class="stroke-current text-primary dark:text-blue-500" stroke-width="2"
+                                    stroke-dasharray="100" stroke-dashoffset="80"></circle>
+                            </g>
+                        </svg>
+                        <!-- Percentage Text -->
+                        <div class="absolute top-1/2 start-6 transform -translate-y-1/2 ">
+                            <span class="text-center text-lg  text-white dark:text-white">20%</span>
+                        </div>
+                    </div>
+                    <p class="text-primary  text-md">الجهد</p>
+                </div>
+                <div class="flex flex-col gap-2 text-center">
+                    <div class="relative size-24">
+                        <svg class="size-full" width="36" height="36" viewBox="0 0 36 36"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <!-- Background Circle -->
+                            <circle cx="18" cy="18" r="16" fill="none"
+                                class="stroke-current  dark:text-neutral-700" stroke-width="2"></circle>
+                            <!-- Progress Circle inside a group with rotation -->
+                            <g class="origin-center -rotate-90 transform">
+                                <circle cx="18" cy="18" r="16" fill="none"
+                                    class="stroke-current text-red-500 dark:text-blue-500" stroke-width="2"
+                                    stroke-dasharray="100" stroke-dashoffset="20"></circle>
+                            </g>
+                        </svg>
+                        <!-- Percentage Text -->
+                        <div class="absolute top-1/2 start-6 transform -translate-y-1/2 ">
+                            <span class="text-center text-lg  text-white dark:text-white">80%</span>
+                        </div>
+                    </div>
+                    <p class=" text-red-500 text-md">الاستهلاك</p>
+                </div>
+                <div class="flex flex-col gap-2 text-center">
+                    <div class="relative size-24">
+                        <svg class="size-full" width="36" height="36" viewBox="0 0 36 36"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <!-- Background Circle -->
+                            <circle cx="18" cy="18" r="16" fill="none"
+                                class="stroke-current  dark:text-neutral-700" stroke-width="2"></circle>
+                            <!-- Progress Circle inside a group with rotation -->
+                            <g class="origin-center -rotate-90 transform">
+                                <circle cx="18" cy="18" r="16" fill="none"
+                                    class="stroke-current text-orange-500 dark:text-blue-500" stroke-width="2"
+                                    stroke-dasharray="100" stroke-dashoffset="40"></circle>
+                            </g>
+                        </svg>
+                        <!-- Percentage Text -->
+                        <div class="absolute top-1/2 start-6 transform -translate-y-1/2 ">
+                            <span class="text-center text-lg  text-white dark:text-white">60%</span>
+                        </div>
+                    </div>
+                    <p class=" text-orange-500 text-md">الضغط</p>
+                </div>
+
+            </div>
+        </div>
+    </UIDisplayBoardModal>
 </template>
 
 <style scoped>
@@ -506,7 +625,6 @@ const handlerOpenModal = ()=>{
 }
 
 .bgImage {
-    background-image: url("~/assets/images/wire.png");
-
+    background-image: url("~/assets/images/wire.png") ;
 }
 </style>

@@ -47,7 +47,7 @@ onMounted(async () => {
     distributionStation.value = tempdistributionStation
 })
 
-// TODO:FIX ZOD
+
 const errors = ref()
 const isLoading = ref(false)
 const handlerAddFeeder = async () => {

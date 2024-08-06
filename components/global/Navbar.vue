@@ -7,14 +7,14 @@
                 class="bg-secondary jui-btn h-[45px] w-[45px] flex items-center justify-center rounded-2xl">
                 <Icon name="ph:user" size="25" class="text-primary" />
             </NuxtLink>
-            <NuxtLink to="#"
+            <!-- <NuxtLink to="#"
                 class="bg-secondary jui-btn h-[45px] w-[45px] flex items-center justify-center rounded-2xl">
                 <Icon name="icon-park-outline:setting-two" size="25" class="text-primary" />
             </NuxtLink>
             <NuxtLink to="#"
                 class="bg-secondary jui-btn h-[45px] w-[45px] flex items-center justify-center rounded-2xl">
                 <Icon name="hugeicons:notification-01" size="25" class="text-primary" />
-            </NuxtLink>
+            </NuxtLink> -->
         </div>
 
     </div>

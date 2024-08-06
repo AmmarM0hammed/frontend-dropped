@@ -187,7 +187,7 @@ const showMessage = (title) => {
 
     // alert(title)
 
-    emit('clickGov')
+    emit('clickGov',title)
 }
 
 

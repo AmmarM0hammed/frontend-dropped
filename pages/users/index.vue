@@ -6,7 +6,7 @@ const body = ref([
     "userName",
     "role",
     "governorate.name",
-    "company",
+    "company.name",
 
 ])
 

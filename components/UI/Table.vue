@@ -176,6 +176,14 @@ const _handlerDelete = async () => {
     getAllData()
 }
 
+const formatDate = (d) => {
+  const date = new Date(d);
+  const formattedDate = date.toLocaleString('en-US', { timeZone: 'America/New_York', hour12: true }).replace(/T/, '-').replace(/\..+/, '');
+
+
+  return formattedDate
+}
+
 
 </script>
 
@@ -261,6 +269,13 @@ const _handlerDelete = async () => {
                             {{ item[_body] == '1' ? 'مدينة' : '' }}
                             {{ item[_body] == '2' ? 'شركة' : '' }}
                             {{ item[_body] == '3' ? 'مستخدم' : '' }}
+                        </span>
+                        <span v-else-if="_body == 'startTime' || _body == 'endTime' || _body == 'creationDate'"> 
+                            {{ formatDate(item[_body]) }}
+                        </span>
+                        <span v-else-if="_body == 'isActive'"> 
+                            <p v-if="item[_body]" class="text-green-500 w-fit  px-2 bg-green-500/10 rounded-md text-xs ">نشط</p>
+                            <p v-else class="text-red-500 bg-red-500/10 px-2 w-fit rounded-md text-xs ">غير نشط</p>
                         </span>
                         <span v-else> {{ getNestedValue(item, _body) || "لا يوجد" }}</span>
                     </td>

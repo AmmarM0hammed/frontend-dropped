@@ -21,6 +21,10 @@ export const useUser = () => {
     return $jkrequest(
       "/User","post",data,null);
   };
+  const update = async (data,id) => {
+    return $jkrequest(
+      `/User/update/${id}`,"post",data,null);
+  };
 
-  return { get , create };
+  return { get , create,update };
 };
