@@ -211,7 +211,7 @@ onMounted(() => {
     </div>
     <div class="bg-white w-fit  items-center flex flex-row gap-5 p-3 rounded-2xl jui-shadow">
 
-      <canvas id="myChart3" class="w-24"></canvas>
+      <canvas id="myChart3" class=" max-w-24 max-h-24"></canvas>
       <div class="flex flex-col justify-center items-center ">
         <p>نسبة</p>
         <p class="font-semibold">50%</p>
