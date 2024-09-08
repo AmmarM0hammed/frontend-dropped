@@ -39,12 +39,12 @@ export const SmartMetersSchema = z.object({
     })
     .min(1, "الاسم يجب ان يكون اكبر من 1 احرف ")
     .max(200, "يجب ان يكون الاسم اصغر من 200 حرف"),
-  address: z
-    .string({
-      required_error: "الحقل مطلوب",
-    })
-    .min(1, "الاسم يجب ان يكون اكبر من 1 احرف ")
-    .max(200, "يجب ان يكون الاسم اصغر من 200 حرف"),
+  // address: z
+  //   .string({
+  //     required_error: "الحقل مطلوب",
+  //   })
+  //   .min(1, "الاسم يجب ان يكون اكبر من 1 احرف ")
+  //   .max(200, "يجب ان يكون الاسم اصغر من 200 حرف"),
 
   connactionType: z.number({
     invalid_type_error: "يجب ان يكون رقماً",
@@ -64,9 +64,9 @@ export const SmartMetersSchema = z.object({
   deviceType: z.number({
     invalid_type_error: "يجب ان يكون رقماً",
   }),
-  companyId: z.number({
-    invalid_type_error: "يجب ان يكون رقماً",
-  }),
+  // companyId: z.number({
+  //   invalid_type_error: "يجب ان يكون رقماً",
+  // }),
   originId: z.number({
     invalid_type_error: "يجب ان يكون رقماً",
   }),
@@ -74,8 +74,8 @@ export const SmartMetersSchema = z.object({
     invalid_type_error: "يجب ان يكون رقماً",
   }),
 
-  customerId: z.number({
-    invalid_type_error: "يجب ان يكون رقماً",
+  customerId:  z.string({
+    required_error: "الحقل مطلوب",
   }),
 
   governorateId: z.number({

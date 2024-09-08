@@ -7,7 +7,7 @@ const filter = ref({
 name: ''
 })
 const pageIndex = ref(1)
-const pageSize = ref(1)
+const pageSize = ref(10)
 const getData = async () => {
     isLoading.value = true;
     const { _, response, error, __ } = await useCustomer().get(filter.value, pageIndex.value, pageSize.value);
@@ -172,6 +172,9 @@ const hanlderAddCustomer = async () => {
                         الشارع
                     </th>
                     <th scope="col" class="px-6 py-3   ">
+                        رقم الهاتف
+                    </th>
+                    <th scope="col" class="px-6 py-3   ">
                         التعديلات
                     </th>
 
@@ -216,6 +219,10 @@ const hanlderAddCustomer = async () => {
                     <td scope="row"
                         class="px-6  py-4 font-medium text-md text-gray-900 whitespace-nowrap dark:text-white">{{
                             item.street || "لا يوجد" }}</td>
+                    <td scope="row"
+                        class="px-6  py-4 font-medium text-md text-gray-900 whitespace-nowrap dark:text-white">{{
+                            item.phoneNumber || "لا يوجد" }}
+                    </td>
 
 
                     <td class="py-4 text-center">

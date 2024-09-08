@@ -9,10 +9,10 @@ const params = useRoute().params
    
     
 
-    <PageSystemManagmentCityLowVoltageStation :cityID="params.id" />
+    <!-- <PageSystemManagmentCityLowVoltageStation :cityID="params.id" />
     <br>
     <PageSystemManagmentCityDCU />
-    <br>
+    <br> -->
     <PageSystemManagmentCitySmartMeters />
 
 

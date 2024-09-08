@@ -3,7 +3,7 @@ import { SmartMetersSchema } from "~/schema/SmartMeters"
 
 
 var SmartMetersDataForm = reactive({
-    name: "", 
+    name: "",
     serialNumber: "",
     referenceNumber: "",
     deviceModelId: 1,
@@ -87,17 +87,17 @@ onMounted(async () => {
     origins.value = tempOrigin
 
     var tempCustomers = []
-    const customer = await useCustomer().get({ Name: '', GovernorateId: '' }, 1, 10000)
+    const customer = await useCustomer().get({ Name: '', GovernorateId: '' }, 1, 1, 10000)
     for (let index = 0; index < customer.response?.result.length; index++) {
         tempCustomers.push({
-            key: customer.response?.result[index].name,
+            key: customer.response?.result[index].firstName,
             value: customer.response?.result[index].id,
         });
     }
     customers.value = tempCustomers
 
     var tempDataCollectionUnits = []
-    const DCU = await useDataCollectionUnit().get({ Name: '', GovernorateId: '' }, 1, 10000)
+    const DCU = await useDataCollectionUnit().get({ Name: '' }, useRoute().params.id, 1, 999)
     for (let index = 0; index < DCU.response?.result.length; index++) {
         tempDataCollectionUnits.push({
             key: DCU.response?.result[index].name,
@@ -108,7 +108,7 @@ onMounted(async () => {
 
 
     var tempLowVoltageStations = []
-    const lowVoltageStation = await useLowVoltageStation().get({ Name: '', GovernorateId: '' }, 1, 10000)
+    const lowVoltageStation = await useLowVoltageStation().get({ Name: '', GovernorateId: '' }, useRoute().params.id, 1, 10000)
     for (let index = 0; index < lowVoltageStation.response?.result.length; index++) {
         tempLowVoltageStations.push({
             key: lowVoltageStation.response?.result[index].name,
@@ -128,16 +128,22 @@ const handlerAddSmartMeters = async () => {
 
     if (!result.success) {
         errors.value = result.error.format()
-        console.log(errors.value)
         return;
     }
     isLoading.value = true
     const { _, response, error, __ } = await useSmartMeters().create(SmartMetersDataForm)
-    SmartMetersModalAdd.value = false
-    isLoading.value = false
-    errors.value = ''
-    SmartMetersDataForm = {}
-    getAllData();
+    if (response != null) {
+        SmartMetersModalAdd.value = false
+        isLoading.value = false
+        errors.value = ''
+        SmartMetersDataForm = {}
+        getAllData();
+    }
+    else{
+        alert(error.response.data.message)
+        isLoading.value = false
+
+    }
 
 
 }
@@ -257,7 +263,7 @@ const removeFilter = () => {
     getAllData()
 }
 
-const handlerView = (data)=>{
+const handlerView = (data) => {
     useSmartMetersStore().data = data
     return navigateTo(`/system-management/city/smart-meters/${data.id}`)
 }
@@ -265,7 +271,12 @@ const handlerView = (data)=>{
 
 
 <template>
+
+
     <UIModal width="50vw" height="fit-content" v-if="SmartMetersModalAdd" @close="handlerCloseModal">
+
+
+        {{ errors }}
         <p class="text-xl text-center font-medium">اضافة عداد الذكية
         </p>
         <br>
@@ -294,7 +305,7 @@ const handlerView = (data)=>{
                 <UITextInput placeholder="رقم المرجع" v-model:input="SmartMetersDataForm.referenceNumber"
                     :error="(errors && errors.referenceNumber) ? errors.referenceNumber._errors[0] : ''" />
             </div>
-            
+
             <div class="w-full">
                 <UITextInput inputType="number" placeholder="تصنيف" v-model:input="SmartMetersDataForm.classify"
                     :error="(errors && errors.classify) ? errors.classify._errors[0] : ''" />
@@ -304,16 +315,19 @@ const handlerView = (data)=>{
                     :error="(errors && errors.deviceType) ? errors.deviceType._errors[0] : ''" />
             </div>
             <div class="w-full">
-                <UITextInput inputType="number" placeholder="نوع الاتصال" v-model:input="SmartMetersDataForm.connactionType"
+                <UITextInput inputType="number" placeholder="نوع الاتصال"
+                    v-model:input="SmartMetersDataForm.connactionType"
                     :error="(errors && errors.connactionType) ? errors.connactionType._errors[0] : ''" />
             </div>
             <div class="w-full">
-                <UISelect :data="lowVoltageStations" placeholder="محطة جهد المنخفض" v-model:input="SmartMetersDataForm.lowVoltageStationId"
-                    type="number" :error="(errors && errors.lowVoltageStationId) ? errors.lowVoltageStationId._errors[0] : ''" />
+                <UISelect :data="lowVoltageStations" placeholder="محطة جهد المنخفض"
+                    v-model:input="SmartMetersDataForm.lowVoltageStationId" type="number"
+                    :error="(errors && errors.lowVoltageStationId) ? errors.lowVoltageStationId._errors[0] : ''" />
             </div>
             <div class="w-full">
-                <UISelect :data="dataCollectionUnits" placeholder="وحدة التجميع" v-model:input="SmartMetersDataForm.dataCollectionUnitId"
-                    type="number" :error="(errors && errors.dataCollectionUnitId) ? errors.dataCollectionUnitId._errors[0] : ''" />
+                <UISelect :data="dataCollectionUnits" placeholder="وحدة التجميع"
+                    v-model:input="SmartMetersDataForm.dataCollectionUnitId" type="number"
+                    :error="(errors && errors.dataCollectionUnitId) ? errors.dataCollectionUnitId._errors[0] : ''" />
             </div>
             <div class="w-full">
                 <UISelect :data="customers" placeholder="المستخدم" v-model:input="SmartMetersDataForm.customerId"
@@ -326,13 +340,13 @@ const handlerView = (data)=>{
 
             <div class="w-full">
                 <UISelect :data="[
-                    {key:'فعال',value:'1'},
-                    {key:'غير فعال',value:'2'},
-                    {key:'قيد الصيانة',value:'3'},
-                    {key:'خارج الخدمة',value:'4'},
+                    { key: 'فعال', value: '1' },
+                    { key: 'غير فعال', value: '2' },
+                    { key: 'قيد الصيانة', value: '3' },
+                    { key: 'خارج الخدمة', value: '4' },
 
-                ]" placeholder="حالة الجهاز" v-model:input="SmartMetersDataForm.deviceStatus"
-                    type="number" :error="(errors && errors.deviceStatus) ? errors.deviceStatus._errors[0] : ''" />
+                ]" placeholder="حالة الجهاز" v-model:input="SmartMetersDataForm.deviceStatus" type="number"
+                    :error="(errors && errors.deviceStatus) ? errors.deviceStatus._errors[0] : ''" />
             </div>
 
             <div class="w-full">
@@ -345,7 +359,7 @@ const handlerView = (data)=>{
                 <UISelect :data="origins" placeholder="المنشأ" v-model:input="SmartMetersDataForm.originId"
                     type="number" :error="(errors && errors.originId) ? errors.originId._errors[0] : ''" />
             </div>
-          
+
             <div class="w-full">
                 <UISelect :data="governorates" placeholder="المحافظة" v-model:input="SmartMetersDataForm.governorateId"
                     type="number" :error="(errors && errors.governorateId) ? errors.governorateId._errors[0] : ''" />
