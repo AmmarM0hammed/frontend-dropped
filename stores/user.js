@@ -10,12 +10,8 @@ export const useUserStore = defineStore('userStore', {
             token:'',
             id:'',
         },
-
     }
  },
-
-
-
 
 
  persist :true

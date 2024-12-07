@@ -14,7 +14,6 @@ useHead({
   
   bodyAttrs: {
     class: ['light','bg-background'],
-
   },
 
 })
@@ -24,9 +23,6 @@ useHead({
 </script>
 
 <template>
-  
-
-
   <NuxtLayout>
     <NuxtPage/>
   </NuxtLayout>

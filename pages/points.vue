@@ -15,10 +15,16 @@ const getAllData = async () => {
 
 };
 
-onMounted(() => {
-    getAllData()
-})
 
+const userSelect = ref([])
+onMounted(async () => {
+    await getAllData()
+    userSelect.value = data.value.map(e => ({
+        key: e.name,
+        value: e.id
+    }));
+
+})
 
 const handlerDelete = async (id) => {
     isLoading.value = true;
@@ -36,10 +42,9 @@ const getPostion = (postion) => {
 }
 
 const form = ref({
-    name: '',
-    email: '',
-    password: '',
-    role: 0,
+    id: '',
+    point: 0,
+
 })
 
 const handlerAddPoint = async () => {
@@ -48,13 +53,11 @@ const handlerAddPoint = async () => {
     isLoading.value = true;
 
     const formData = new FormData();
-    formData.append('name', form.value.name);
-    formData.append('email', form.value.email);
-    formData.append('password', form.value.password);
-    formData.append('role', form.value.role);
+    formData.append('user_id', form.value.id);
+    formData.append('points', form.value.point);
 
     try {
-        const { _, response, error, refresh } = await user.create(formData);
+        const { _, response, error, refresh } = await user.addPoints(formData);
 
         showAdd.value = false;
         getAllData();
@@ -66,33 +69,30 @@ const handlerAddPoint = async () => {
     }
 };
 
-watch(() => mapPostion.value, () => {
-    form.value.latitud = mapPostion.value.lat
-    form.value.longitud = mapPostion.value.lng
-})
+
 </script>
 
 <template>
-
     <UIModal @close="showAdd = false" v-if="showAdd">
 
         <div class="w-full gap-2 text-center flex flex-col">
-            <p class="text-center">Add Store</p>
-            <UITextInput placeholder="Name" v-model:input="form.name" />
-            <UITextInput placeholder="Email" v-model:input="form.email" input-type="email" />
-            <UITextInput placeholder="Password" input-type="password" v-model:input="form.password" />
+            {{ form }}
+            <p class="text-center">Add Point</p>
+            <UISelect placeholder="User" :data="userSelect" v-model:input="form.id" />
+            <UITextInput placeholder="Point" v-model:input="form.point" />
 
-            <button v-if="!isLoading" class="btn bg-black" @click="handlerAddPoint">Save User</button>
-            <button v-else class="btn bg-black/50">Save User .....</button>
+            <br>
+            <button v-if="!isLoading" class="btn bg-black" @click="handlerAddPoint">Save Point</button>
+            <button v-else class="btn bg-black/50">Save Point .....</button>
 
         </div>
     </UIModal>
 
 
-    <p class="text-3xl font-semibold">Users</p>
+    <p class="text-3xl font-semibold">Points</p>
 
     <br>
-    <button class="btn bg-black" @click="showAdd = true">Add Users</button>
+    <button class="btn bg-black" @click="showAdd = true">Set Points</button>
     <br>
     <br>
     <table dir="ltr" class="w-full px-2 text-sm text-left rtl:text-right text-primary">
@@ -107,6 +107,9 @@ watch(() => mapPostion.value, () => {
                 <th scope="col" class="px-6 py-3">
                     <span class="font-medium">Email</span>
                 </th>
+                <th scope="col" class="px-6 py-3">
+                    <span class="font-medium">Points</span>
+                </th>
 
 
                 <th scope="col" class="px-6 py-3">
@@ -120,6 +123,11 @@ watch(() => mapPostion.value, () => {
                 <td>{{ item.name }}</td>
 
                 <td>{{ item.email }}</td>
+                <td>
+                    <div class="">
+                        {{ item.point }}
+                    </div>
+                </td>
                 <td>
                     <Icon @click="handlerDelete(item.id)" name="fluent:delete-28-regular"
                         class="text-red-500 text-2xl cursor-pointer jui-btn" />

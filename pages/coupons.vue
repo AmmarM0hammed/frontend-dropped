@@ -1,7 +1,7 @@
 <script setup>
 
 const isLoading = ref(false)
-const points = usePoints();
+const coupon = useCoupon();
 
 const data = ref([]);
 
@@ -9,7 +9,7 @@ const getAllData = async () => {
 
 
     isLoading.value = true;
-    const { _, response, error, refresh } = await points.get();
+    const { _, response, error, refresh } = await coupon.get();
     data.value = response;
     isLoading.value = false;
 
@@ -22,7 +22,7 @@ onMounted(() => {
 
 const handlerDelete = async (id) => {
     isLoading.value = true;
-    const { _, response, error, refresh } = await points.deletePoint(id);
+    const { _, response, error, refresh } = await coupon.deletePoint(id);
     data.value = response;
     isLoading.value = false;
     getAllData()
@@ -36,11 +36,8 @@ const getPostion = (postion) => {
 }
 
 const form = ref({
-    latitud: null,
-    longitud: null,
     title: '',
-    description: '',
-    link: '',
+    price: 0,
     images: null,
 })
 
@@ -51,14 +48,11 @@ const handlerAddPoint = async () => {
 
     const formData = new FormData();
     formData.append('title', form.value.title);
-    formData.append('description', form.value.description);
-    formData.append('link', form.value.link);
-    formData.append('latitude', mapPostion.value.lat);
-    formData.append('longitude', mapPostion.value.lng);
-    formData.append('image', form.value.images); 
+    formData.append('price', form.value.price);
+    formData.append('images', form.value.images); 
 
     try {
-        const { _, response, error, refresh } = await points.addPoint(formData);  
+        const { _, response, error, refresh } = await coupon.addPoint(formData);  
      
             showAdd.value = false;
             getAllData();
@@ -78,28 +72,25 @@ watch(()=> mapPostion.value , ()=>{
 
 <template>
 
-    <UIModal height="90%" @close="showAdd = false" v-if="showAdd">
+    <UIModal  @close="showAdd = false" v-if="showAdd">
       
         <div class="w-full gap-2 text-center flex flex-col">
-            <p class="text-center">Add Point</p>
+            <p class="text-center">Add Store</p>
             <UITextInput placeholder="Title" v-model:input="form.title" />
-            <UITextInput placeholder="Description" v-model:input="form.description" />
-            <UITextInput placeholder="Link" v-model:input="form.link" />
+            <UITextInput placeholder="Price" v-model:input="form.price" input-type="number" />
             <UITextInput placeholder="Image" input-type="file" v-model:input="form.image" @change="e => form.images = e.target.files[0]" />
-            <div class="map">
-                <CommonMap @postion="getPostion" :lat="form.latitud" :lng="form.longitud" />
-            </div>
-            <button v-if="!isLoading"   class="btn bg-black" @click="handlerAddPoint">Save Point</button>
-            <button v-else  class="btn bg-black/50" >Save Point .....</button>
+        
+            <button v-if="!isLoading"   class="btn bg-black" @click="handlerAddPoint">Save Store</button>
+            <button v-else  class="btn bg-black/50" >Save Store .....</button>
 
         </div>
     </UIModal>
 
 
-    <p class="text-3xl font-semibold">Points</p>
+    <p class="text-3xl font-semibold">Store</p>
 
     <br>
-    <button class="btn bg-black" @click="showAdd = true">Add Point</button>
+    <button class="btn bg-black" @click="showAdd = true">Add Store</button>
     <br>
     <br>
     <table dir="ltr" class="w-full px-2 text-sm text-left rtl:text-right text-primary">
@@ -114,11 +105,9 @@ watch(()=> mapPostion.value , ()=>{
                 <th scope="col" class="px-6 py-3">
                     <span class="font-medium">Title</span>
                 </th>
+               
                 <th scope="col" class="px-6 py-3">
-                    <span class="font-medium">Description</span>
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    <span class="font-medium">Link</span>
+                    <span class="font-medium">Price</span>
                 </th>
                 <th scope="col" class="px-6 py-3">
                     <span class="font-medium">Action</span>
@@ -130,14 +119,13 @@ watch(()=> mapPostion.value , ()=>{
                 <td>{{ item.id }}</td>
                 <td>
                     <div class="w-12 h-12">
-                        <a :href="`http://185.218.125.120:6901/${item.image}`" target="_blank">
-                            <img :src="`http://185.218.125.120:6901/${item.image}`" alt="">
+                        <a :href="`http://185.218.125.120:6901/${item.images}`" target="_blank">
+                            <img :src="`http://185.218.125.120:6901/${item.images}`" alt="">
                         </a>
                     </div>
                 </td>
                 <td>{{ item.title }}</td>
-                <td>{{ item.description }}</td>
-                <td><a :href="item.link" target="_blank">LINK</a></td>
+                <td>{{ item.price }}</td>
                 <td>
                     <Icon @click="handlerDelete(item.id)" name="fluent:delete-28-regular"
                         class="text-red-500 text-2xl cursor-pointer jui-btn" />

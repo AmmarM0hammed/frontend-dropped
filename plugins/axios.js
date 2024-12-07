@@ -1,7 +1,7 @@
 import axios from "axios"
 export default defineNuxtPlugin( () =>{
 
-    axios.defaults.baseURL = "https://amiv2-api.tatweer-dev.com/api/";
+    axios.defaults.baseURL = "http://185.218.125.120:6901/api/";
 
     axios.interceptors.request.use((config) =>{
         const userStore = useUserStore();

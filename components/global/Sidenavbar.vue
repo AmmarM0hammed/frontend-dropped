@@ -2,18 +2,11 @@
 <script setup>
 
 const links = ref([
-    {title : "لوحة العرض" , icon : "solar:display-linear" , path:'/display-board' },
-    {title : "ملخص النظام" , icon : "icon-park-outline:system" , path:'/' },
-    {title : "ادارة المنظومة" , icon : "solar:display-linear" , path:'/system-management' },
-    {title : "ادارة الاجهزة" , icon : "ph:devices-light",path:"/device" },
-    {title : "العملاء" , icon : "ph:user",path:"/customer" },
-    {title : "ادارة المناطق" , icon : "ic:outline-place",path:"/region" },
-    {title : "الشركات" , icon : "f7:building-2",path:"/company" },
-    {title : "ادارة المستخدمين" , icon : "ph:user" , path:'/users' },
-    {title : "ادارة الفواتير" , icon : "uil:bill" , path:'/report' },
-    {title : "تسجيل الخروج" , icon : "mdi-light:logout" , path:'/logout' },
-
-    
+    {title : "Points" , icon : "tdesign:location" , path:'/' },
+    {title : "Store" , icon : "hugeicons:coupon-percent" , path:'/coupons' },
+    {title : "Users" , icon : "ph:user" , path:'/users' },
+    {title : "Points" , icon : "ph:coin-light" , path:'/points' },
+    {title : "Logout" , icon : "mdi-light:logout" , path:'/logout' },
 ])
 
 
@@ -21,17 +14,17 @@ const links = ref([
 
 <template>
 
-    <div class="w-[270px] bg-primary fixed h-screen right-0">
-        <div class="flex flex-col items-center py-8  w-full">
-            <div class="logo flex justify-end px-10 items-center w-full gap-2">
-                <p class="font-medium text-white text-xl">ادارة التحكم</p>
-                <img src="~/assets/images/logo.svg" class="w-12 h-12"/>
+    <div dir="ltr" class="z-50 w-[270px] bg-white shadow-xl fixed h-screen left-0">
+        <div dir="ltr" class="flex flex-col items-center py-8  w-full">
+            <div class="logo flex flex-row-reverse justify-end px-10 items-center w-full gap-2">
+                <p class="font-medium text-black text-xl">Dashboard</p>
+                <img src="~/assets/images/logo.png" class="w-12 h-12"/>
             </div>
             <br>
         
             
             <div class="menu flex flex-col gap-1 w-full px-2">
-                <NuxtLink :to="item.path" v-for="(item, index) in links" :key="index" class="text-white py-4 rounded-2xl jui-btn flex justify-end items-center gap-5 px-8 hover:bg-opacity-15 hover:bg-black"
+                <NuxtLink :to="item.path" v-for="(item, index) in links" :key="index" class="text-black py-4 rounded-2xl jui-btn flex flex-row-reverse justify-end items-center gap-5 px-8 hover:bg-opacity-15 hover:bg-black"
                 :class="useRoute().fullPath === item.path ? 'bg-opacity-15 bg-black' :'' "
                 >
                     <p class="text-md">{{item.title}}</p>

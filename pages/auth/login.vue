@@ -1,6 +1,4 @@
 <script setup>
-
-
 definePageMeta({
     layout: "AuthLayout"
 })
@@ -26,39 +24,37 @@ const handlerLogin = async()=>{
         return;
     }
     
-    useUserStore().user.id = response.result.id
-    useUserStore().user.role = response.result.role
-    useUserStore().user.username = response.result.userName
-    useUserStore().user.fullname = response.result.fullName
-    useUserStore().user.token = response.result.token
+    console.log(response.user.id)
+    useUserStore().user.id = response.user.id
+    useUserStore().user.role = response.user.role
+    useUserStore().user.username = response.user.email
+    useUserStore().user.fullname = response.user.name
+    useUserStore().user.token = response.token
     return navigateTo('/')
     isLoading.value = false;
 
 }
-
-
-
 </script>
 <template>
     <div dir="rtl" class=" h-[calc(100vh_-_20px)]  ">
-        <div class="w-full z-10 fixed top-0 bg-primary   h-full  overflow-hidden flex items-center justify-center ">
+        <div class="w-full z-10 fixed top-0   h-full  overflow-hidden flex items-center justify-center ">
             <div class="flex flex-col  w-96  gap-5 items-center  ">
                 <div class="flex flex-col items-center gap-2"> 
-                    <img src="~/assets/images/logo.svg" class="max-w-20" />
-                    <p class="text-2xl  text-white">ادارة التحكم</p>
+                    <img src="~/assets/images/logo.png" class="max-w-20" />
+                    <p class="text-2xl  text-black">Dashboard</p>
                 </div>
 
-                <div class=" w-full flex flex-col gap-2 py-12 px-5 z-50 bg-white rounded-3xl">
-                <p class="text-2xl font-semibold">تسجيل الدخول</p>
-                <p class="text-lg font-normal">تسجيل الدخول الى حسابك</p>
+                <div dir="ltr" class=" w-full flex flex-col gap-2 py-12 px-5 z-50 bg-white rounded-3xl shadow-xl">
+                <p class="text-2xl font-semibold">Login</p>
+                <p class="text-lg font-normal">Login to your Account</p>
                 <div class="flex flex-col gap-2 w-full pt-5">
-                    <UITextInput v-model:input="formData.username" placeholder="البريد الاكتروني" class="py-4 rounded-2xl bg-black/5" />
-                    <UITextInput input-type="password" v-model:input="formData.password" placeholder="كلمة السر" class="py-4 rounded-2xl bg-black/5" />
+                    <UITextInput v-model:input="formData.username" placeholder="Email" class="py-4 rounded-2xl bg-black/5" />
+                    <UITextInput input-type="password" v-model:input="formData.password" placeholder="Password" class="py-4 rounded-2xl bg-black/5" />
                     <br>
                     <p class="text-center py-2 text-red-500">{{errors}}</p>
-                    <button v-if="!isLoading" @click="handlerLogin" class="btn btn-block text-sm py-4 rounded-t-2xl">تسجيل الدخول</button>
+                    <button v-if="!isLoading" @click="handlerLogin" class="btn btn-block text-sm py-4 rounded-t-2xl">Login</button>
                     
-                    <button v-else disabled class="btn  btn-block opacity-50 text-sm py-4 rounded-t-2xl">تسجيل الدخول</button>
+                    <button v-else disabled class="btn  btn-block opacity-50 text-sm py-4 rounded-t-2xl">Login</button>
 
                 </div>
             </div>

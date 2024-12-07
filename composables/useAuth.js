@@ -6,7 +6,7 @@ export const useAuth = () => {
     return $jkrequest(
       "/login","post",
       {
-        userName: data.username,
+        email: data.username,
         password: data.password,
       },
       null
